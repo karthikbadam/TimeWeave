@@ -4,7 +4,11 @@ var keywords = ["sanders", "clinton", "biden", "trump", "carson"];
 
 var keyWordFrequency = {};
 
-documents = {};
+documents = [];
+
+var timeline;
+
+var parseDate = d3.time.format("%Y-%m-%d").parse;
 
 $(document).ready(function () {
 
@@ -16,8 +20,13 @@ $(document).ready(function () {
 
             d = d.slice(0, d.length - 1);
             d = JSON.parse(d);
+            
+            if (parseDate(d.date.split("T")[0]).getTime() < 
+                parseDate("2015-05-01").getTime()) {
+                return;   
+            }
 
-            d.date = Date.parse(d.date);
+            d.date = parseDate(d.date.split("T")[0]);
             d.wordCount = +d.wordCount;
 
             var maxOccurrences = -1;
@@ -48,25 +57,30 @@ $(document).ready(function () {
                 keyWordFrequency[bestKeyword] = 0;
 
             }
-            
-            if (!documents[bestKeyword]) {
-             
-                documents[bestKeyword] = [];
-                
-            }
+
+            //            if (!documents[bestKeyword]) {
+            //             
+            //                documents[bestKeyword] = [];
+            //                
+            //            }
 
             keyWordFrequency[bestKeyword] ++;
 
-            documents[bestKeyword].push(d);
-            
+            documents.push(d);
+
         });
 
         console.log(documents);
 
         console.log(keyWordFrequency);
-        
-        CreateTimeLine();
-        
+
+        timeline = TimeLine({
+            width: $("body").width(),
+            height: $("body").height(),
+            keyWordFrequency: keyWordFrequency,
+            documents: documents
+        });
+
     });
 
 });
