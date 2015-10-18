@@ -6,7 +6,7 @@ function TimeLine(options) {
         top: 20,
         right: 20,
         bottom: 30,
-        left: 20
+        left: 50
     };
 
     _self.width = options.width - _self.margin.left - _self.margin.right;
@@ -19,10 +19,10 @@ function TimeLine(options) {
         .attr("id", "timeline-viz")
         .attr("class", "timeline")
         .attr("width", _self.width + _self.margin.left + _self.margin.right)
-        .attr("height", _self.height + _self.margin.bottom + _self.margin.top);
+        .attr("height", _self.height + _self.margin.bottom + _self.margin.top)
+        .style("border", "1px solid");
 
-
-    _self.padding = 15;
+    _self.padding = 8;
 
     _self.svg.selectAll(".line")
         .data(Object.keys(_self.keyWordFrequency))
@@ -39,8 +39,25 @@ function TimeLine(options) {
         .attr("y2", function (d, i) {
             return _self.padding * i;
         })
-        .attr("stroke", "gray")
-        .style("stroke-width", "2px");
+        .attr("stroke", "#ddd")
+        .style("stroke-width", "1px");
+    
+    _self.svg.selectAll(".keyword")
+        .data(Object.keys(_self.keyWordFrequency))
+        .enter()
+        .append("text")
+        .attr("class", "keyword")
+        .attr("transform", function (d, i) {
+            return "translate(" + (_self.margin.left - 5) + "," + 
+                (_self.margin.top + _self.padding * (i + 0.3)) + ")";
+        })
+        .style("font-family", "Helvetica-Light")
+        .style("font-size", "9px")
+        .style("text-anchor", "end")
+        .text(function (d) {
+            return d;   
+        });
+        
 
     _self.dateScale = d3.time.scale().range([0, _self.width]);
 
@@ -64,10 +81,10 @@ function TimeLine(options) {
             var i = Object.keys(_self.keyWordFrequency).indexOf(d.keyword);
             return _self.padding * i;
         })
-        .attr("r", 4)
+        .attr("r", 3)
         .attr("fill", "#fb6a4a")
-        .attr("fill-opacity", 0.5)
+        .attr("fill-opacity", 0.3)
         .attr("stroke", "#fb6a4a")
-        .attr("stroke-width", "1.5px");
+        .attr("stroke-width", "1px");
 
 }
